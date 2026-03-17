@@ -15,6 +15,7 @@ df = df.sort_values('date')
 
 st.subheader("Dataset Preview")
 st.write(df.head())
+ty.
 
 # Feature Engineering
 df['day_of_week'] = df['date'].dt.dayofweek
