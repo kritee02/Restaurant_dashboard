@@ -322,65 +322,213 @@ plt.title("Actual vs Predicted Sales")
 
 plt.show()
 
-# ## Model Comparison
+# ## Gradient Boosting Model
 # 
-# Two forecasting models were compared:
+# Gradient Boosting is implemented as an additional ensemble learning method to improve forecasting performance. Unlike simple regression models, Gradient Boosting builds trees sequentially, where each new tree attempts to correct the errors made by the previous one.
 # 
-# 1. Linear Regression
-# 2. Random Forest
-# 
-# Performance metrics show that Random Forest produced lower error values,
-# indicating improved forecasting accuracy.
+# This allows the model to capture more complex relationships in the restaurant sales data and provides a stronger comparison with the previously implemented models.
 
 # In[24]:
 
 
-mae_rf = mean_absolute_error(y_test,y_pred_rf)
-rmse_rf = mean_squared_error(y_test,y_pred_rf)**0.5
+# =========================
+# GRADIENT BOOSTING MODEL
+# =========================
 
-print("Linear Regression MAE:",mae_lr)
-print("Random Forest MAE:",mae_rf)
+from sklearn.ensemble import GradientBoostingRegressor
 
-print("Linear Regression RMSE:",rmse_lr)
-print("Random Forest RMSE:",rmse_rf)
+gbr = GradientBoostingRegressor(
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=3,
+    random_state=42
+)
 
-# ## Feature Importance Analysis
-# 
-# Feature importance analysis was performed using the Random Forest model.
-# 
-# The results indicate which variables have the strongest influence
-# on sales predictions. Lag-based features, particularly lag_14,
-# were the most important predictors, suggesting strong weekly
-# seasonality in restaurant demand.
+gbr.fit(X_train, y_train)
+y_pred_gbr = gbr.predict(X_test)
+
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+mae_gbr = mean_absolute_error(y_test, y_pred_gbr)
+rmse_gbr = mean_squared_error(y_test, y_pred_gbr) ** 0.5
+
+print("Gradient Boosting MAE:", mae_gbr)
+print("Gradient Boosting RMSE:", rmse_gbr)
 
 # In[25]:
+
+
+plt.figure(figsize=(10,5))
+
+plt.plot(y_test.values, label="Actual Sales")
+plt.plot(y_pred_gbr, label="Gradient Boosting Prediction")
+
+plt.legend()
+plt.title("Actual vs Predicted Sales (Gradient Boosting)")
+
+plt.show()
+
+# ## XGBoost Model
+# 
+# XGBoost (Extreme Gradient Boosting) is a powerful boosting algorithm widely used in predictive analytics due to its efficiency, regularization capability, and strong performance on structured data.
+# 
+# In this project, XGBoost is included to strengthen the model set and evaluate whether a more advanced boosting approach can improve forecasting accuracy compared to Linear Regression, Random Forest, and standard Gradient Boosting.
+
+# In[26]:
+
+
+# =========================
+# XGBOOST MODEL
+# =========================
+
+from xgboost import XGBRegressor
+
+xgb = XGBRegressor(
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=3,
+    random_state=42,
+    objective='reg:squarederror'
+)
+
+xgb.fit(X_train, y_train)
+y_pred_xgb = xgb.predict(X_test)
+
+mae_xgb = mean_absolute_error(y_test, y_pred_xgb)
+rmse_xgb = mean_squared_error(y_test, y_pred_xgb) ** 0.5
+
+print("XGBoost MAE:", mae_xgb)
+print("XGBoost RMSE:", rmse_xgb)
+
+# In[27]:
+
+
+plt.figure(figsize=(10,5))
+
+plt.plot(y_test.values, label="Actual Sales")
+plt.plot(y_pred_xgb, label="XGBoost Prediction")
+
+plt.legend()
+plt.title("Actual vs Predicted Sales (XGBoost)")
+
+plt.show()
+
+# ## Model Comparison
+# 
+# The forecasting performance of all implemented models is compared using Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE).
+# 
+# This comparison helps identify which model provides the most accurate predictions for restaurant sales forecasting. Lower values of MAE and RMSE indicate better predictive performance.
+
+# In[28]:
+
+
+
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+# Linear Regression
+mae_lr = mean_absolute_error(y_test, y_pred_lr)
+rmse_lr = mean_squared_error(y_test, y_pred_lr) ** 0.5
+
+# Random Forest
+mae_rf = mean_absolute_error(y_test, y_pred_rf)
+rmse_rf = mean_squared_error(y_test, y_pred_rf) ** 0.5
+
+# Gradient Boosting
+mae_gbr = mean_absolute_error(y_test, y_pred_gbr)
+rmse_gbr = mean_squared_error(y_test, y_pred_gbr) ** 0.5
+
+# XGBoost
+mae_xgb = mean_absolute_error(y_test, y_pred_xgb)
+rmse_xgb = mean_squared_error(y_test, y_pred_xgb) ** 0.5
+
+# Comparison table
+comparison = pd.DataFrame({
+    "Model": ["Linear Regression", "Random Forest", "Gradient Boosting", "XGBoost"],
+    "MAE": [mae_lr, mae_rf, mae_gbr, mae_xgb],
+    "RMSE": [rmse_lr, rmse_rf, rmse_gbr, rmse_xgb]
+})
+
+print(comparison)
+
+# ## Model Selection (Best Model)
+# 
+# Based on the evaluation metrics (MAE and RMSE), the best-performing model is selected.
+# 
+# The model with the lowest RMSE is considered the most reliable for forecasting future sales.
+
+# In[29]:
+
+
+best_model = comparison.loc[comparison["RMSE"].idxmin()]
+
+print("Best Model:")
+print(best_model)
+
+# ## Feature Importance Analysis (Random Forest & XGBoost)
+# 
+# Feature importance analysis is used to identify which input variables contribute most to the model’s predictions. This helps improve interpretability and provides insights into key factors influencing restaurant sales.
+# 
+# Both Random Forest and XGBoost models are analyzed to compare how different algorithms evaluate feature importance.
+
+# In[30]:
 
 
 import pandas as pd
 import matplotlib.pyplot as plt
 
-importance = pd.Series(rf.feature_importances_, index=features)
+# Random Forest Feature Importance
+rf_importance = pd.Series(rf.feature_importances_, index=features)
 
-importance.sort_values().plot(kind='barh')
-
-plt.title("Feature Importance for Sales Prediction")
-
+plt.figure(figsize=(8,5))
+rf_importance.sort_values().plot(kind='barh')
+plt.title("Feature Importance (Random Forest)")
+plt.xlabel("Importance Score")
 plt.show()
 
-# ## Forecast Visualization
-# 
-# Actual and predicted sales values are plotted to visually assess forecasting performance.
-# 
-# This allows observation of how well the model captures sales trends.
+# XGBoost Feature Importance
+xgb_importance = pd.Series(xgb.feature_importances_, index=features)
 
-# In[26]:
-
-
-import matplotlib.pyplot as plt
-
-plt.figure(figsize=(10,5))
-plt.plot(y_test.values,label="Actual Sales")
-plt.plot(y_pred_rf,label="Predicted Sales")
-plt.legend()
-plt.title("Actual vs Predicted Sales")
+plt.figure(figsize=(8,5))
+xgb_importance.sort_values().plot(kind='barh')
+plt.title("Feature Importance (XGBoost)")
+plt.xlabel("Importance Score")
 plt.show()
+
+# ## Forecast Visualization (model comparison)
+# 
+# The following graphs compare actual sales values with predicted values from different machine learning models.
+# 
+# These visualizations help assess how closely each model follows real sales patterns and highlight differences in prediction accuracy.
+
+# In[31]:
+
+
+plt.figure(figsize=(12,6))
+
+plt.plot(y_test.values, label="Actual Sales")
+plt.plot(y_pred_lr, label="Linear Regression")
+plt.plot(y_pred_rf, label="Random Forest")
+plt.plot(y_pred_gbr, label="Gradient Boosting")
+plt.plot(y_pred_xgb, label="XGBoost")
+
+plt.title("Actual vs Predicted Sales (Model Comparison)")
+plt.xlabel("Time")
+plt.ylabel("Sales")
+
+# Move legend below
+plt.legend(
+    loc='upper center',
+    bbox_to_anchor=(0.5, -0.15),
+    ncol=3
+)
+
+plt.tight_layout()
+plt.show()
+
+# ## Model Limitations
+# 
+# Although advanced models such as XGBoost and Gradient Boosting were implemented, they did not outperform Linear Regression in this study.
+# 
+# This may be due to the relatively small dataset and the simplicity of the underlying patterns, which do not require highly complex models.
+# 
+# Future work could explore larger datasets and additional features to better utilize advanced machine learning models.
