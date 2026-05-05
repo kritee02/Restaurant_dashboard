@@ -1,4 +1,5 @@
 import streamlit as st
+from styles import apply_styles  
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -18,6 +19,8 @@ from models import (
 # =========================
 st.set_page_config(page_title="Sales Forecasting Dashboard", layout="wide")
 
+apply_styles()
+
 st.title("🍽️ Restaurant Sales Forecasting Dashboard")
 
 st.markdown(
@@ -29,8 +32,8 @@ st.caption(
     "and forecasts future sales for one year."
 )
 
-st.caption(
-    "⚠️ This dashboard is developed for academic and study purposes only. "
+st.success(
+    "📌This dashboard is developed for academic and study purposes only. "
     "The results are based on a synthetic dataset and may not reflect real-world performance."
 )
 
@@ -141,8 +144,22 @@ if option == "Dataset Overview":
 
     col1.metric("Rows", df.shape[0])
     col2.metric("Columns", df.shape[1])
-    col3.metric("Date Range", f"{df['date'].min().date()} → {df['date'].max().date()}")
+    start = df['date'].min()
+    end = df['date'].max()
 
+    col3.markdown(f"""
+    <div style="
+    background-color: white;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0px 3px 8px rgba(0,0,0,0.08);
+    ">
+    <div style="font-size:14px; color:#6c757d;">Date Range</div>
+    <div style="font-size:20px; font-weight:600;">
+        {start.strftime('%Y-%m-%d')} → {end.strftime('%Y-%m-%d')}
+       </div>
+      </div>
+      """, unsafe_allow_html=True)
     st.subheader("Summary Statistics")
     st.dataframe(df.describe(), use_container_width=True)
 
@@ -248,13 +265,12 @@ elif option == "Modeling":
     st.pyplot(fig)
 
     st.info(f"Best model based on lowest RMSE: {best_model_name}")
-
 # =========================
 # 4. MODEL COMPARISON
 # =========================
 elif option == "Model Comparison":
 
-    st.subheader("Model Performance Comparison")
+    st.subheader("📊 Model Performance Comparison")
 
     comparison = pd.DataFrame({
         "Model": list(results.keys()),
@@ -268,17 +284,24 @@ elif option == "Model Comparison":
 
     st.dataframe(comparison, use_container_width=True)
 
-    st.success(f"Best machine learning model based on RMSE: {best_model_name}")
+    st.info(f"📌 Best machine learning model based on RMSE: {best_model_name}")
 
+    # =========================
+    # CSV DOWNLOAD
+    # =========================
     csv = comparison.to_csv(index=False).encode("utf-8")
 
     st.download_button(
-        label="Download comparison table as CSV",
+        label="📥 Download comparison table as CSV",
         data=csv,
         file_name="model_comparison.csv",
-        mime="text/csv"
+        mime="text/csv",
+        type="secondary"
     )
 
+    # =========================
+    # SLIDER
+    # =========================
     compare_points = st.slider(
         "Select number of test observations to display:",
         min_value=20,
@@ -287,6 +310,9 @@ elif option == "Model Comparison":
         step=10
     )
 
+    # =========================
+    # PLOT
+    # =========================
     fig, ax = plt.subplots(figsize=(12, 6))
 
     ax.plot(
@@ -307,14 +333,19 @@ elif option == "Model Comparison":
             linestyle=linestyle
         )
 
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=4)
+    ax.legend(
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.15),
+        ncol=4
+    )
+
     ax.set_title("Actual vs Predicted Sales Comparison")
     ax.set_xlabel("Test Observations")
     ax.set_ylabel("Sales")
 
     fig.tight_layout()
-    st.pyplot(fig)
 
+    st.pyplot(fig)
 # =========================
 # 5. FEATURE IMPORTANCE
 # =========================
