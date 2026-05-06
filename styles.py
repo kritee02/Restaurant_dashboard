@@ -67,5 +67,68 @@ def apply_styles():
         border-radius: 12px !important;
         border-left: 5px solid #1f77b4 !important;
     }
+    .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f3c88;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    border-left: 6px solid #f2c94c;
+    padding-left: 12px;
+}
+
+.section-subtitle {
+    font-size: 0.95rem;
+    color: #5b6575;
+    margin-bottom: 15px;
+}  
+                .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0px 4px 14px rgba(31, 60, 136, 0.10);
+}
+
+.summary-table th {
+    background-color: #eaf1fb;
+    color: #1f3c88;
+    font-weight: 700;
+    padding: 10px;
+    border: 1px solid #d6e2f0;
+}
+
+.summary-table td {
+    padding: 9px;
+    border: 1px solid #e1e8f2;
+    color: #2c3e50;
+}
+
+.summary-table tr:nth-child(even) {
+    background-color: #f8fbff;
+}          
+
+                /* Selectbox styling */
+div[data-baseweb="select"] {
+    background-color: white !important;
+    border: 2px solid #1f3c88 !important;
+    border-radius: 12px !important;
+    box-shadow: 0px 4px 12px rgba(31, 60, 136, 0.15);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Hover effect */
+div[data-baseweb="select"]:hover {
+    border-color: #f2c94c !important;
+    box-shadow: 0px 4px 18px rgba(242, 201, 76, 0.35);
+}
+
+/* Selected text */
+div[data-baseweb="select"] span {
+    color: #1f3c88 !important;
+    font-weight: 600 !important;
+    font-size: 18px !important;
+}            
     </style>
     """, unsafe_allow_html=True)

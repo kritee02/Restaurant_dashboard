@@ -160,8 +160,22 @@ if option == "Dataset Overview":
        </div>
       </div>
       """, unsafe_allow_html=True)
-    st.subheader("Summary Statistics")
-    st.dataframe(df.describe(), use_container_width=True)
+    
+    st.markdown("""
+    <div class="section-title">
+    📊 Summary Statistics
+     </div>
+     <div class="section-subtitle">
+    Descriptive statistics for the processed restaurant sales dataset.
+     </div>
+     """, unsafe_allow_html=True)
+
+    summary_stats = df.describe(include="all")
+
+    st.markdown(
+    summary_stats.to_html(classes="summary-table", border=0),
+    unsafe_allow_html=True
+    )
 
 # =========================
 # 2. EDA
@@ -225,10 +239,20 @@ elif option == "Modeling":
 
     st.subheader("Model Evaluation")
 
+    st.markdown("""
+<div class="section-subtitle" style="
+font-size:18px;
+font-weight:600;
+color:#1f3c88;
+margin-bottom:8px;">
+📌 Select a forecasting model to analyse
+</div>
+""", unsafe_allow_html=True)
+
     selected_model = st.selectbox(
-        "Select a model to view:",
-        list(results.keys())
-    )
+    "",
+    list(results.keys())
+     )
 
     selected_pred = results[selected_model]["pred"]
 
