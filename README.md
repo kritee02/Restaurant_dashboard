@@ -1,88 +1,218 @@
 # Restaurant Sales Forecasting Dashboard
 
-This project is a Streamlit-based dashboard for leakage-safe restaurant sales forecasting using machine learning. It uses a synthetic two-year daily restaurant sales dataset and compares baseline forecasting methods with machine learning models.
+## Leakage-Safe Forecasting and Interpretability Analysis of Restaurant Sales Using Machine Learning
 
-## Project Overview
+This project is a Streamlit-based dashboard for leakage-safe restaurant sales forecasting using machine learning techniques. The system uses a synthetic two-year daily restaurant sales dataset and compares baseline forecasting approaches with multiple machine learning models.
 
-The system forecasts daily restaurant sales and presents the results in an interactive dashboard. It includes:
+The project focuses on:
+- Leakage-safe time-series forecasting
+- Interpretability analysis
+- Baseline comparison
+- Recursive multi-step forecasting
+- Interactive dashboard visualisation
 
-- Dataset preview and summary statistics
+---
+
+# Project Overview
+
+The system forecasts future restaurant sales using historical daily revenue data and presents results through an interactive Streamlit dashboard.
+
+The dashboard includes:
+
+- Dataset overview and summary statistics
 - Exploratory data analysis
 - Leakage-safe feature engineering
 - Chronological train-test split
-- Baseline forecasting models
-- Machine learning models
+- Baseline forecasting methods
+- Machine learning forecasting models
 - Model comparison using MAE, RMSE, MAPE, and R²
-- Feature importance visualisation
+- Actual vs predicted sales visualisation
+- Feature importance analysis
 - Recursive future sales forecasting
-- CSV download options
+- Forecast download functionality
 
-This project is developed for academic and study purposes only. The dataset is synthetic and may not reflect real-world restaurant performance.
+This project was developed for academic purposes as part of a final-year undergraduate dissertation project.
 
-## Models Used
+---
 
-The dashboard compares the following models:
+# Models Implemented
 
-- Naïve forecasting
-- Seasonal naïve forecasting
-- Moving average forecasting
+## Baseline Forecasting Models
+- Naïve Forecasting
+- Seasonal Naïve Forecasting
+- Moving Average Forecasting
+
+## Machine Learning Models
 - Linear Regression
 - Random Forest Regressor
 - Gradient Boosting Regressor
 - XGBoost Regressor
 
-## Project Structure
+---
+
+# Project Structure
 
 ```text
 Restaurant_dashboard/
 │
-├── app.py                  # Main Streamlit dashboard
-├── models.py               # Data preparation, model training, evaluation, and forecasting
-├── generate_data.py        # Synthetic restaurant sales dataset generator
-├── styles.py               # Custom CSS styling for the dashboard
+├── app.py
+├── models.py
+├── generate_data.py
+├── styles.py
+├── README.md
 │
-├── data/
-│   └── restaurant_sales.csv
-│
-└── README.md
+└── data/
+    └── restaurant_sales.csv
 ```
 
-## Installation
+---
 
-### 1. Clone the repository
+# Technologies Used
+
+- Python
+- Streamlit
+- Pandas
+- NumPy
+- Matplotlib
+- Scikit-learn
+- XGBoost
+
+---
+
+# Dataset
+
+The dataset is synthetically generated to simulate realistic restaurant sales behaviour over two years (2024–2025).
+
+The dataset includes:
+- Daily sales revenue
+- Day-of-week patterns
+- Weekend effects
+- Monthly seasonality
+- Long-term trend
+- Random daily variability
+
+The forecasting target variable is:
+
+```text
+Sales = Total Daily Revenue
+```
+
+---
+
+# Leakage-Safe Forecasting
+
+The system is designed to prevent data leakage in time-series forecasting.
+
+Leakage prevention methods include:
+
+- Chronological data splitting
+- No random shuffling
+- Lag features created using historical values only
+- Rolling averages calculated using shifted historical observations
+- Test data excluded during training
+- Recursive future forecasting using previous predictions only
+
+---
+
+# Feature Engineering
+
+The system generates the following features:
+
+## Temporal Features
+- day_of_week
+- month
+- is_weekend
+- time_index
+
+## Lag Features
+- lag_1
+- lag_7
+- lag_14
+
+## Rolling Features
+- rolling_7
+- rolling_14
+
+These features help the models capture:
+- Weekly seasonality
+- Short-term dependencies
+- Local sales trends
+
+---
+
+# Evaluation Metrics
+
+Model performance is evaluated using:
+
+- MAE (Mean Absolute Error)
+- RMSE (Root Mean Squared Error)
+- MAPE (Mean Absolute Percentage Error)
+- R² (Coefficient of Determination)
+
+The system also includes:
+- Walk-forward validation
+- Ablation analysis
+- Multi-step forecasting evaluation
+
+---
+
+# Dashboard Features
+
+The Streamlit dashboard allows users to:
+
+- View dataset statistics
+- Compare forecasting models
+- Visualise prediction performance
+- Analyse feature importance
+- Generate future forecasts
+- Download forecasting outputs
+
+---
+
+# Installation
+
+## 1. Clone the Repository
 
 ```bash
 git clone https://github.com/YOUR-USERNAME/restaurant-sales-forecasting-dashboard.git
 cd restaurant-sales-forecasting-dashboard
 ```
 
-### 2. Create a virtual environment
+---
+
+## 2. Create a Virtual Environment
 
 ```bash
 python -m venv venv
 ```
 
-Activate it:
+### Activate the Environment
+
+Windows:
 
 ```bash
 venv\Scripts\activate
 ```
 
-For Mac/Linux:
+Mac/Linux:
 
 ```bash
 source venv/bin/activate
 ```
 
-### 3. Install required packages
+---
+
+## 3. Install Required Packages
 
 ```bash
 pip install streamlit pandas numpy matplotlib scikit-learn xgboost
 ```
 
-## Generate the Dataset
+---
 
-Run the data generation script:
+# Generate the Dataset
+
+Run:
 
 ```bash
 python generate_data.py
@@ -94,70 +224,81 @@ This creates:
 data/restaurant_sales.csv
 ```
 
-## Run the Dashboard
+---
 
-Start the Streamlit app:
+# Run the Dashboard
+
+Start the Streamlit application:
 
 ```bash
 streamlit run app.py
 ```
 
-The dashboard will open in the browser at:
+The dashboard will open at:
 
 ```text
 http://localhost:8501
 ```
 
-## Main Files
+---
 
-### app.py
+# Main Files
 
-Contains the Streamlit user interface, navigation menu, dashboard sections, charts, metrics, and CSV download buttons.
+## app.py
+Contains the Streamlit dashboard interface, charts, forecasting outputs, visualisations, and user interaction components.
 
-### models.py
+## models.py
+Contains:
+- Data preprocessing
+- Leakage-safe feature engineering
+- Chronological splitting
+- Baseline forecasting
+- Machine learning model training
+- Evaluation metrics
+- Recursive forecasting
+- Feature importance analysis
 
-Contains the core machine learning pipeline, including preprocessing, leakage-safe feature engineering, chronological splitting, baseline models, model training, evaluation, best model selection, and recursive forecasting.
+## generate_data.py
+Generates the synthetic two-year restaurant sales dataset using:
+- Trend
+- Seasonality
+- Weekend effects
+- Random noise
 
-### generate_data.py
+## styles.py
+Contains custom CSS styling used in the dashboard interface.
 
-Generates the synthetic two-year daily restaurant sales dataset using weekend effects, monthly seasonality, trend, and random noise.
+---
 
-### styles.py
+# Results Summary
 
-Contains custom CSS used to improve dashboard appearance.
+The experimental results showed that Linear Regression achieved the best overall forecasting performance on the synthetic dataset.
 
-## Evaluation Metrics
+The findings demonstrate that:
+- Simpler interpretable models can outperform more complex ensemble methods in structured datasets
+- Leakage-safe evaluation is critical for realistic forecasting
+- Lag-based features significantly improve forecasting accuracy
+- Recursive forecasting error increases as prediction horizons become longer
 
-The models are evaluated using:
+---
 
-- MAE: Mean Absolute Error
-- RMSE: Root Mean Squared Error
-- MAPE: Mean Absolute Percentage Error
-- R²: Coefficient of determination
+# Future Improvements
 
-## Leakage-Safe Forecasting
+Possible future improvements include:
 
-The system prevents data leakage by:
-
-- Sorting data chronologically
-- Creating lag features using past values only
-- Creating rolling averages using shifted historical values
-- Splitting data chronologically instead of randomly
-- Evaluating models only on unseen future test data
-
-## Future Improvements
-
-Possible improvements include:
-
-- Replacing synthetic data with real restaurant transaction data
-- Adding external variables such as weather, holidays, promotions, and local events
-- Implementing walk-forward validation
-- Comparing recursive forecasting with direct multi-step forecasting
-- Adding SHAP or permutation importance for deeper interpretability
+- Using real-world restaurant transaction data
+- Adding weather, holiday, and promotion variables
+- Implementing ARIMA, ETS, or Prophet forecasting models
+- Applying SHAP explainability techniques
+- Comparing recursive and direct forecasting approaches
 - Deploying the dashboard online
+- Integrating real-time forecasting pipelines
 
-## Author
+---
+
+# Author
 
 Kritee Thapa  
-BSc (Hons) Computing  
-De Montfort University
+BSc (Hons) Computer Science  
+De Montfort University  
+Module: CTEC3451
